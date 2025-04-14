@@ -1,3 +1,4 @@
+
 # AvaloniaMessageBox
 
 A flexible and modern modal message box implementation for Avalonia UI 11.2+.
@@ -12,11 +13,39 @@ Supports:
 
 ## ✨ Features
 
-- Compatible with .NET 9 and Avalonia 11.2+
-- Uses theme fonts and colors
-- Supports `OK`, `OK/Cancel`, and `Yes/No` button sets
-- Icons: Info, Warning, Error, Success, Question, Stop
-- Automatically adapts to application lifetime and environment
+- Compatible with **.NET 9** and **Avalonia 11.2+**
+- Fully theme-aware (fonts, colors, shadows)
+- Automatically localizes button text (`Yes`, `No`, `OK`, `Cancel`) using `CultureInfo.CurrentUICulture`
+- Supports:
+  - `OK`
+  - `OK / Cancel`
+  - `Yes / No`
+- Built-in modern emoji-based icons:
+  - ℹ️ Info
+  - ⚠️ Warning
+  - ❌ Error
+  - ✅ Success
+  - ❓ Question
+  - 🛑✋ Stop (**hand over stop sign** with overlay)
+- Works even **before** `MainWindow` or `MainView` is set
+
+## 🌍 Localization Support
+
+Button labels (`OK`, `Cancel`, `Yes`, `No`) are **automatically translated** based on the current UI culture (`CultureInfo.CurrentUICulture`).  
+Includes built-in translations for over **100 languages**, including:
+
+- pt-BR → "Sim", "Não", "OK", "Cancelar"
+- es → "Sí", "No", "OK", "Cancelar"
+- fr → "Oui", "Non", "OK", "Annuler"
+- de → "Ja", "Nein", "OK", "Abbrechen"
+- ja → "はい", "いいえ", "OK", "キャンセル"
+- ...and many others
+
+No configuration needed — just set the culture in your app startup code:
+
+```csharp
+CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("pt-BR");
+```
 
 ## 🚀 Usage
 
@@ -35,33 +64,28 @@ You can call it even before setting `MainWindow` in your `App.cs`:
 await AvaloniaWindowedMessageBox.ShowAsync(null, "Startup Error", "The configuration is invalid.");
 ```
 
+## 🧪 Example with Stop Icon
+
+```csharp
+await AvaloniaWindowedMessageBox.ShowAsync(
+    this,
+    "Restricted",
+    "Access denied.",
+    AvaloniaWindowedMessageBox.MessageBoxButtons.Ok,
+    AvaloniaWindowedMessageBox.MessageBoxIcon.Stop);
+```
+
+This renders a composite emoji with 🛑 background and ✋ overlaid at center.
+
 ## 🧩 Installation
 
-Simply copy `AvaloniaWindowedMessageBox.cs` into your project.
+Simply copy `AvaloniaWindowedMessageBox.cs` into your project.  
+No dependencies or NuGet packages required.
 
 ## 📄 License
 
-MIT License
-
-Copyright (c) 2024 Castello Branco Tecnologia
-
-Permission is hereby granted, free of charge, to any person obtaining a copy  
-of this software and associated documentation files (the “Software”), to deal  
-in the Software without restriction, including without limitation the rights  
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell  
-copies of the Software, and to permit persons to whom the Software is  
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all  
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR  
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,  
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER  
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
-SOFTWARE.
+MIT License  
+(c) 2024 Castello Branco Tecnologia
 
 ## 🏷️ Credits
 
