@@ -139,9 +139,26 @@ public static class AvaloniaWindowedMessageBox
 
         void AddButton(string content, MessageBoxResult result, bool isDefault = false, bool isCancel = false)
         {
+            TextBlock textBlock = new TextBlock();
+    
+            if (content.StartsWith("✔"))
+            {
+                textBlock.Inlines.Add(new Run("✔") { Foreground = Brushes.Green, FontWeight = FontWeight.Bold });
+                textBlock.Inlines.Add(new Run(content.Substring(1)));
+            }
+            else if (content.StartsWith("❌"))
+            {
+                textBlock.Inlines.Add(new Run("❌") { Foreground = Brushes.Red });
+                textBlock.Inlines.Add(new Run(content.Substring(1)));
+            }
+            else
+            {
+                textBlock.Text = content;
+            }
+            
             var button = new Button
             {
-                Content = content,
+                Content = textBlock,
                 Margin = new Thickness(10, 0, 10, 0),
                 MinWidth = 75
             };
