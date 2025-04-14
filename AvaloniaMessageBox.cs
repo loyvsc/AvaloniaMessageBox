@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,9 +14,12 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
-using Cesgranrio.SafeBrowser.Helpers;
 
 namespace CastelloBranco.MessageBox;
+
+// OpenSource from Castello Branco Tecnologia => Github at 
+// https://github.com/CastelloBrancoTecnologia/AvaloniaMessageBox
+// MIT License
 
 public static class AvaloniaWindowedMessageBox
 {
@@ -89,6 +93,14 @@ public static class AvaloniaWindowedMessageBox
                 [!TextBlock.ForegroundProperty] = new DynamicResourceExtension("TextForegroundBrush")
             }
         };
+        
+        titlePanel.PointerPressed += (s, e) =>
+        {
+            if (e.GetCurrentPoint(titlePanel).Properties.IsLeftButtonPressed)
+            {
+                window.BeginMoveDrag(e);
+            }
+        };
 
         string iconText = icon switch
         {
@@ -101,17 +113,59 @@ public static class AvaloniaWindowedMessageBox
             _ => string.Empty
         };
 
-        TextBlock iconBlock = new TextBlock
+        
+        Control iconBlock;
+
+        if (icon == MessageBoxIcon.Stop)
         {
-            FontFamily = FontFamily.Default,
-            Text = iconText,
-            FontSize = 36,
-            VerticalAlignment = VerticalAlignment.Top,
-            Margin = new Thickness(10, 0, 10, 0),
-            Width = 50,
-            TextAlignment = TextAlignment.Center,
-            [!TextBlock.ForegroundProperty] = new DynamicResourceExtension("TextForegroundBrush")
-        };
+            // 🛑 com ✋ sobreposto
+            iconBlock = new Grid
+            {
+                Width = 50,
+                Height = 50,
+                Margin = new Thickness(10, 0, 10, 0),
+                Children =
+                {
+                    new TextBlock
+                    {
+                        Text = "🛑",
+                        FontSize = 36,
+                        TextAlignment = TextAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        FontFamily = FontFamily.Default,
+                        [!TextBlock.ForegroundProperty] = new DynamicResourceExtension("TextForegroundBrush")
+                    },
+                    new TextBlock
+                    {
+                        Text = "✋",
+                        FontSize = 18,
+                        TextAlignment = TextAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        FontFamily = FontFamily.Default,
+                        [!TextBlock.ForegroundProperty] = new DynamicResourceExtension("TextForegroundBrush")
+                    }
+                }
+            };
+        }
+        else
+        {
+            // Outros ícones normais
+            iconBlock = new TextBlock
+            {
+                FontFamily = FontFamily.Default,
+                Text = iconText,
+                FontSize = 36,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(10, 0, 10, 0),
+                Width = 50,
+                Height = 50,
+                TextAlignment = TextAlignment.Center,
+                [!TextBlock.ForegroundProperty] = new DynamicResourceExtension("TextForegroundBrush")
+            };
+        }
 
         TextBlock messageBlock = new TextBlock
         {
@@ -169,18 +223,22 @@ public static class AvaloniaWindowedMessageBox
             buttonPanel.Children.Add(button);
         }
 
+
+        CulturePrompt? cp = AllCultures.SingleOrDefault(x => CultureInfo.CurrentCulture.Name.StartsWith(x.Culture)) ??
+                            AllCultures[0];
+
         switch (buttons)
         {
             case MessageBoxButtons.Ok:
-                AddButton("✔ OK", MessageBoxResult.Ok, isDefault: true);
+                AddButton($"✔ {cp.Ok}", MessageBoxResult.Ok, isDefault: true);
                 break;
             case MessageBoxButtons.OkCancel:
-                AddButton("✔ OK", MessageBoxResult.Ok, isDefault: true);
-                AddButton("❌ Cancelar", MessageBoxResult.Cancel, isCancel: true);
+                AddButton($"✔ {cp.Ok}", MessageBoxResult.Ok, isDefault: true);
+                AddButton($"❌ {cp.Cancela}", MessageBoxResult.Cancel, isCancel: true);
                 break;
             case MessageBoxButtons.YesNo:
-                AddButton("✔ Sim", MessageBoxResult.Yes, isDefault: true);
-                AddButton("❌ Não", MessageBoxResult.No, isCancel: true);
+                AddButton($"✔ {cp.Sim}", MessageBoxResult.Yes, isDefault: true);
+                AddButton($"❌ {cp.Nao}", MessageBoxResult.No, isCancel: true);
                 break;
         }
 
@@ -214,6 +272,12 @@ public static class AvaloniaWindowedMessageBox
         window.Topmost = true;
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         window.Content = scrollableContent;
+        
+        window.Opened += (_, _) =>
+        {
+            NSApplicationHelper.SetWindowLevel(window, NSApplicationHelper.NSNotificationWindowLevel);
+            defaultButton?.Focus();
+        };
 
         window.KeyDown += (_, e) =>
         {
@@ -252,4 +316,100 @@ public static class AvaloniaWindowedMessageBox
 
         return await tcs.Task;
     }
+
+    public class CulturePrompt (string culture, string sim, string nao, string ok, string cancela)
+    {
+        public string Culture { get; set; } = culture;
+        public string Sim { get; set; } = sim;
+        public string Nao { get; set; } = nao;
+        public string Ok  { get; set; } = ok;
+        public string Cancela { get; set; } = cancela;
+    }
+
+    public static CulturePrompt[] AllCultures { get; } =
+    [
+        // Globais e asiáticas
+        new("en", "Yes", "No", "OK", "Cancel"),
+        new("zh-CN", "是", "否", "好的", "取消"),
+        new("ja", "はい", "いいえ", "OK", "キャンセル"),
+        new("hi-IN", "हाँ", "नहीं", "ठीक है", "रद्द करें"),
+        new("ru", "Да", "Нет", "ОК", "Отмена"),
+        new("es", "Sí", "No", "OK", "Cancelar"),
+        new("fr", "Oui", "Non", "OK", "Annuler"),
+        new("ar", "نعم", "لا", "موافق", "إلغاء"),
+        new("pt-BR", "Sim", "Não", "OK", "Cancelar"),
+        new("de", "Ja", "Nein", "OK", "Abbrechen"),
+        new("it", "Sì", "No", "OK", "Annulla"),
+        new("ko", "예", "아니요", "확인", "취소"),
+        new("tr", "Evet", "Hayır", "Tamam", "İptal"),
+        new("fa", "بله", "خیر", "باشه", "لغو"),
+        new("vi", "Có", "Không", "OK", "Hủy"),
+        new("id", "Ya", "Tidak", "OK", "Batal"),
+        new("th", "ใช่", "ไม่ใช่", "ตกลง", "ยกเลิก"),
+
+        // Europeias — oficiais e regionais
+        new("pt-PT", "Sim", "Não", "OK", "Cancelar"),
+        new("pl", "Tak", "Nie", "OK", "Anuluj"),
+        new("uk", "Так", "Ні", "OK", "Скасувати"),
+        new("ro", "Da", "Nu", "OK", "Anulează"),
+        new("nl", "Ja", "Nee", "OK", "Annuleren"),
+        new("sv", "Ja", "Nej", "OK", "Avbryt"),
+        new("no", "Ja", "Nei", "OK", "Avbryt"),
+        new("fi", "Kyllä", "Ei", "OK", "Peruuta"),
+        new("da", "Ja", "Nej", "OK", "Annuller"),
+        new("cs", "Ano", "Ne", "OK", "Zrušit"),
+        new("sk", "Áno", "Nie", "OK", "Zrušiť"),
+        new("hu", "Igen", "Nem", "OK", "Mégse"),
+        new("el", "Ναι", "Όχι", "OK", "Ακύρωση"),
+        new("lt", "Taip", "Ne", "Gerai", "Atšaukti"),
+        new("lv", "Jā", "Nē", "Labi", "Atcelt"),
+        new("et", "Jah", "Ei", "OK", "Tühista"),
+        new("sl", "Da", "Ne", "V redu", "Prekliči"),
+        new("hr", "Da", "Ne", "U redu", "Odustani"),
+        new("sr", "Да", "Не", "У реду", "Откажи"),
+        new("bg", "Да", "Не", "Добре", "Отказ"),
+        new("mk", "Да", "Не", "Во ред", "Откажи"),
+        new("sq", "Po", "Jo", "OK", "Anulo"),
+        new("bs", "Da", "Ne", "U redu", "Otkaži"),
+        new("is", "Já", "Nei", "Í lagi", "Hætta við"),
+        new("af", "Ja", "Nee", "OK", "Kanselleer"),
+        new("he", "כן", "לא", "אישור", "ביטול"),
+        new("ga", "Tá", "Níl", "OK", "Cealaigh"),
+        new("cy", "Ie", "Na", "Iawn", "Canslo"),
+        new("gd", "Tha", "Chan eil", "Ceart ma-thà", "Sguir dheth"),
+        new("br", "Ya", "Ket", "Mat eo", "Nullañ"),
+        new("co", "Iè", "Innò", "OK", "Abbandunà"),
+        new("rm", "Gea", "Na", "OK", "Annulà"),
+        new("fur", "Sì", "No", "Va ben", "Anule"),
+        new("lad", "Sí", "No", "OK", "Anular"),
+        new("sc", "Iè", "Non", "OK", "Cancella"),
+        new("eu", "Bai", "Ez", "Ados", "Utzi"),
+        new("ca", "Sí", "No", "D'acord", "Cancel·la"),
+        new("wa", "Oyi", "Neni", "Dacor", "Rinoncî"),
+        new("be", "Так", "Не", "ОК", "Адмяніць"),
+        new("hy", "Այո", "Ոչ", "Լավ", "Չեղարկել"),
+        new("ka", "დიახ", "არა", "კარგი", "გაუქმება"),
+        new("lb", "Jo", "Nee", "OK", "Ofbriechen"),
+        new("mwl", "Sim", "Nun", "OK", "Cancelear"),
+
+        // Africanas principais
+        new("sw", "Ndiyo", "Hapana", "Sawa", "Ghairi"),
+        new("zu", "Yebo", "Cha", "Kulungile", "Khansela"),
+        new("xh", "Ewe", "Hayi", "Kulungile", "Rhoxisa"),
+        new("yo", "Bẹẹni", "Rárá", "O Dára", "Fagile"),
+        new("ig", "Ee", "Mba", "Ọ Dịrị Mma", "Kagbuo"),
+        new("ha", "I", "A'a", "To", "Soke"),
+        new("am", "አዎን", "አይ", "እሺ", "ይቅር"),
+        new("so", "Haa", "Maya", "Haa", "Ka noqo"),
+        new("ti", "እወ", "ኣይ", "እሺ", "ተወው"),
+        new("ff", "Eey", "Alaa", "Waaw", "Dagg"),
+        new("wo", "Waaw", "Déedéet", "OK", "Neenal"),
+        new("ln", "Ee", "Te", "Malamu", "Koboya"),
+        new("mg", "Eny", "Tsia", "OK", "Foano"),
+        new("ak", "Aane", "Daabi", "Yoo", "Twa"),
+        new("st", "E", "Tjhe", "Ho Lokile", "Hlakholla"),
+        new("tn", "Ee", "Nnyaa", "Go Lokile", "Khansela"),
+        new("sn", "Hongu", "Kwete", "Zvakanaka", "Kanzura")
+    ];
+
 }
