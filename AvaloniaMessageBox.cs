@@ -1,10 +1,10 @@
-// AvaloniaWindowedMessageBox.cs
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Documents;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -13,6 +13,7 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
+using Cesgranrio.SafeBrowser.Helpers;
 
 namespace CastelloBranco.MessageBox;
 
@@ -143,13 +144,13 @@ public static class AvaloniaWindowedMessageBox
     
             if (content.StartsWith("✔"))
             {
-                textBlock.Inlines.Add(new Run("✔") { Foreground = Brushes.Green, FontWeight = FontWeight.Bold });
-                textBlock.Inlines.Add(new Run(content.Substring(1)));
+                textBlock.Inlines!.Add(new Run("✔") { Foreground = Brushes.Green, FontWeight = FontWeight.Bold });
+                textBlock.Inlines!.Add(new Run(content.Substring(1)));
             }
             else if (content.StartsWith("❌"))
             {
-                textBlock.Inlines.Add(new Run("❌") { Foreground = Brushes.Red });
-                textBlock.Inlines.Add(new Run(content.Substring(1)));
+                textBlock.Inlines!.Add(new Run("❌") { Foreground = Brushes.Red });
+                textBlock.Inlines!.Add(new Run(content.Substring(1)));
             }
             else
             {
