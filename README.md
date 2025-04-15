@@ -32,7 +32,7 @@ Supports:
 ## 🌍 Localization Support
 
 Button labels (`OK`, `Cancel`, `Yes`, `No`) are **automatically translated** based on the current UI culture (`CultureInfo.CurrentUICulture`).  
-Includes built-in translations for over **100 languages**, including:
+Includes built-in translations for over **68 languages**, including:
 
 - pt-BR → "Sim", "Não", "OK", "Cancelar"
 - es → "Sí", "No", "OK", "Cancelar"
