@@ -379,6 +379,143 @@ public static class AvaloniaWindowedMessageBox
         );
     }
 
+     public static MessageBoxResult ShowOnMacOs(
+        string text,
+        string caption,
+        MessageBoxButtons buttons = MessageBoxButtons.OK)
+    {
+        try
+        {
+            // Use AppKit to display a modal dialog
+            IntPtr alert = CreateNSAlert(caption, text, buttons);
+
+            IntPtr runModalSel = sel_registerName("runModal");
+
+            int response = (int)objc_msgSend(alert, runModalSel);
+
+            switch (buttons)
+            {
+                case MessageBoxButtons.OK:
+                    return response switch
+                    {
+                        1000 => MessageBoxResult.OK, // NSAlertFirstButtonReturn
+                        _ => MessageBoxResult.OK
+                    };
+
+                case MessageBoxButtons.OKCancel:
+                    return response switch
+                    {
+                        1000 => MessageBoxResult.OK, // NSAlertFirstButtonReturn
+                        1001 => MessageBoxResult.Cancel, // NSAlertSecondButtonReturn
+                        _ => MessageBoxResult.OK
+                    };
+
+                case MessageBoxButtons.YesNo:
+                    return response switch
+                    {
+                        1000 => MessageBoxResult.Yes, // NSAlertThirdButtonReturn
+                        1001 => MessageBoxResult.No,
+                        _ => MessageBoxResult.OK
+                    };
+
+                default:
+                    return response switch
+                    {
+                        1000 => MessageBoxResult.OK, // NSAlertFirstButtonReturn
+                        _ => MessageBoxResult.OK
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to show message box on macOS: {ex.Message}");
+            throw new InvalidOperationException("Failed to show message box on macOS.", ex);
+        }
+    }
+
+    [DllImport("libobjc.dylib")]
+    private static extern IntPtr objc_getClass(string className);
+
+    [DllImport("libobjc.dylib")]
+    private static extern IntPtr sel_registerName(string selectorName);
+
+    [DllImport("libobjc.dylib", EntryPoint = "objc_msgSend")]
+    private static extern IntPtr objc_msgSend(IntPtr receiver, IntPtr selector);
+
+    [DllImport("libobjc.dylib", EntryPoint = "objc_msgSend")]
+    private static extern IntPtr objc_msgSend(IntPtr receiver, IntPtr selector, IntPtr arg);
+
+    private static IntPtr NSStringFromString(string str)
+    {
+        IntPtr nsStringClass = objc_getClass("NSString");
+        IntPtr stringWithUTF8Sel = sel_registerName("stringWithUTF8String:");
+        IntPtr utf8Str = Marshal.StringToHGlobalAuto(str);
+
+        IntPtr nsString = objc_msgSend(nsStringClass, stringWithUTF8Sel, utf8Str);
+
+        Marshal.FreeHGlobal(utf8Str);
+
+        return nsString;
+    }
+
+    private static IntPtr CreateNSAlert(string title, string message, MessageBoxButtons buttons)
+    {
+        // Get the NSAlert class and selectors
+        IntPtr nsAlertClass = objc_getClass("NSAlert");
+        if (nsAlertClass == IntPtr.Zero)
+        {
+            throw new InvalidOperationException("Failed to get NSAlert class.");
+        }
+
+        IntPtr allocSel = sel_registerName("alloc");
+        IntPtr initSel = sel_registerName("init");
+        IntPtr setMessageTextSel = sel_registerName("setMessageText:");
+        IntPtr setInformativeTextSel = sel_registerName("setInformativeText:");
+        IntPtr addButtonWithTitleSel = sel_registerName("addButtonWithTitle:");
+
+        // Ativar o app antes de exibir o alerta
+        IntPtr nsAppClass = objc_getClass("NSApplication");
+        IntPtr sharedAppSel = sel_registerName("sharedApplication");
+        IntPtr activateIgnoringOtherAppsSel = sel_registerName("activateIgnoringOtherApps:");
+
+        IntPtr sharedApp = objc_msgSend(nsAppClass, sharedAppSel);
+        objc_msgSend(sharedApp, activateIgnoringOtherAppsSel, 1);
+
+        // Create an instance of NSAlert
+        IntPtr alert = objc_msgSend(objc_msgSend(nsAlertClass, allocSel), initSel);
+
+        // Set the message text
+        IntPtr nsTitle = NSStringFromString(title);
+        objc_msgSend(alert, setMessageTextSel, nsTitle);
+
+        // Set the informative text
+        IntPtr nsMessage = NSStringFromString(message);
+        objc_msgSend(alert, setInformativeTextSel, nsMessage);
+
+        // Add buttons based on the MessageBoxButtons
+        switch (buttons)
+        {
+            case MessageBoxButtons.OK:
+                objc_msgSend(alert, addButtonWithTitleSel, NSStringFromString("OK"));
+                break;
+
+            case MessageBoxButtons.OKCancel:
+                objc_msgSend(alert, addButtonWithTitleSel, NSStringFromString("OK"));
+                objc_msgSend(alert, addButtonWithTitleSel, NSStringFromString("Cancel"));
+                break;
+
+            case MessageBoxButtons.YesNo:
+                objc_msgSend(alert, addButtonWithTitleSel, NSStringFromString("Yes"));
+                objc_msgSend(alert, addButtonWithTitleSel, NSStringFromString("No"));
+                break;
+
+            default:
+                throw new NotSupportedException($"MessageBoxButtons {buttons} is not supported.");
+        }
+
+        return alert;
+    }
+
     private static CulturePrompt[] AllCultures =
     [
         new("en",        "Yes",       "No",      "Ok",      "Cancel",    "Exception",       "An error occurred",   "Location", "Message"),
