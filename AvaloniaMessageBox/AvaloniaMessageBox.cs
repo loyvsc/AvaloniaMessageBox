@@ -460,7 +460,7 @@ public static class AvaloniaWindowedMessageBox
         return tcs.Task;
     }
 
-    public static Task<MessageBoxResult> ShowOnWindowsAsync(
+    private static Task<MessageBoxResult> ShowOnWindowsAsync(
         string text,
         string caption,
         MessageBoxButtons buttons = MessageBoxButtons.Ok,
@@ -646,6 +646,11 @@ public static class AvaloniaWindowedMessageBox
 
                             buttonRegions[(bx, bx + buttonWidth)] = mapped;
                         }
+                        
+                        if (font != IntPtr.Zero)
+                        {
+                            XUnloadFont(display, font);
+                        }
 
                         break;
 
@@ -753,6 +758,9 @@ public static class AvaloniaWindowedMessageBox
 
     // X11 Native Methods
     
+    [DllImport("libX11")]
+    public static extern void XUnloadFont(IntPtr display, IntPtr font);
+
     [DllImport("libX11")]
     public static extern void XSetFont(IntPtr display, IntPtr gc, IntPtr font);
 
