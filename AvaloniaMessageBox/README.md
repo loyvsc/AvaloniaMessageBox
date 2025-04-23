@@ -7,6 +7,7 @@ Supports:
 - Classic Desktop applications (`IClassicDesktopStyleApplicationLifetime`)
 - Single view apps (`ISingleViewApplicationLifetime`)
 - Early fallback before `MainWindow` or `MainView` is ready
+- Native Fallback to OS API com P/Invoke para **macOS**, **Windows** e **X11/Linux** if avalonia is not avaliable
 - DPI-aware sizing and theme-aware font and styling
 - Optional icons and multi-line messages
 - Modal behavior even in SingleView via panel overlay
@@ -31,7 +32,7 @@ Supports:
 
 ## 🌍 Localization Support
 
-Button labels (`OK`, `Cancel`, `Yes`, `No`) are **automatically translated** based on the current UI culture (`CultureInfo.CurrentUICulture`).  
+Button labels (`OK`, `Cancel`, `Yes`, `No`) are **automatically translated** based on the current UI culture (`CultureInfo.Current`).  
 Includes built-in translations for over **68 languages**, including:
 
 - pt-BR → "Sim", "Não", "OK", "Cancelar"
@@ -43,50 +44,60 @@ Includes built-in translations for over **68 languages**, including:
 
 No configuration needed — just set the culture in your app startup code:
 
-```csharp
-CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("pt-BR");
-```
-
-## 🚀 Usage
+## 🚀 Uso
 
 ```csharp
-await AvaloniaWindowedMessageBox.ShowAsync(
-    parent: this, // Can be a Window or UserControl
-    title: "Attention",
-    message: "Are you sure you want to continue?",
-    buttons: AvaloniaWindowedMessageBox.MessageBoxButtons.YesNo,
-    icon: AvaloniaWindowedMessageBox.MessageBoxIcon.Question);
+await MessageBox.ShowAsync(
+    parent: this, // Pode ser Window ou UserControl
+    title: "Atenção",
+    message: "Tem certeza que deseja continuar?",
+    buttons: MessageBoxButtons.YesNo,
+    icon: MessageBoxIcon.Question);
 ```
 
 You can call it even before setting `MainWindow` in your `App.cs`:
 
-```csharp
-await AvaloniaWindowedMessageBox.ShowAsync(null, "Startup Error", "The configuration is invalid.");
-```
-
-## 🧪 Example with Stop Icon
+Automatic Fallback to native os MessageBox if Avalonia is not ready
 
 ```csharp
-await AvaloniaWindowedMessageBox.ShowAsync(
-    this,
-    "Restricted",
-    "Access denied.",
-    AvaloniaWindowedMessageBox.MessageBoxButtons.Ok,
-    AvaloniaWindowedMessageBox.MessageBoxIcon.Stop);
+await MessageBox.ShowAsync(null, "Erro de Inicialização", "Configuração inválida.");
 ```
 
-This renders a composite emoji with 🛑 background and ✋ overlaid at center.
+## 🛑 Mostrar Exceção com Detalhes
 
-## 🧩 Installation
+```csharp
+try
+{
+    // ...
+}
+catch (Exception ex)
+{
+    await ExceptionMessageBox.ShowExceptionDialogAsync(this, ex);
+}
+```
 
-Simply copy `AvaloniaWindowedMessageBox.cs` into your project.  
-No dependencies or NuGet packages required.
+Inclui nome da exceção, linha do erro e mensagem localizada.
 
-## 📄 License
+## 📦 Install
 
-MIT License  
-(c) 2024 Castello Branco Tecnologia
+### ✅ NuGet
 
-## 🏷️ Credits
+```bash
+dotnet add package CastelloBranco.AvaloniaMessageBox
+```
 
-Created and maintained by **Castello Branco Tecnologia**
+Ou no seu `.csproj`:
+
+```xml
+<PackageReference Include="CastelloBranco.AvaloniaMessageBox" Version="1.0.0" />
+```
+
+## 📄 Licença
+
+[MIT License](LICENSE.txt)  
+(c) 2025 **Castello Branco Tecnologia**
+
+## 🏷️ Créditos
+
+Criado e mantido por **Castello Branco Tecnologia**  
+[GitHub - CastelloBrancoTecnologia/AvaloniaMessageBox](https://github.com/CastelloBrancoTecnologia/AvaloniaMessageBox)

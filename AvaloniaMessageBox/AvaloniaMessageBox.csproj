@@ -5,10 +5,45 @@
         <LangVersion>default</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <Title>CastelloBranco.AvaloniaMessageBox</Title>
+        <Authors>Castello Branco Tecnologia</Authors>
+        <PackageId>CastelloBranco.AvaloniaMessageBox</PackageId>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Description>Utility Functions for string Manipulation</Description>
+        <Copyright>Castello Branco Tecnologia</Copyright>
+        <AssemblyName>CastelloBranco.AvaloniaMessageBox</AssemblyName>
+        <RootNamespace>CastelloBranco.AvaloniaMessageBox</RootNamespace>
+        <SignAssembly>False</SignAssembly>
+        <Company>Castello Branco Tecnologia</Company>
+        <Product>CastelloBranco.AvaloniaMessageBox</Product>
+        <AssemblyVersion>2504.23.1017.0</AssemblyVersion>
+        <Version>1.0.1</Version>
+        <PackageProjectUrl>https://github.com/CastelloBrancoTecnologia/AvaloniaMessageBox</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/CastelloBrancoTecnologia/AvaloniaMessageBox</RepositoryUrl>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Avalonia" Version="11.2.8" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="LICENSE.txt">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Update="README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+
+    <Target Name="PushNuGetPackage" AfterTargets="GenerateNuspec">
+        <Message Text="Push NuGet Package to NuGet Feed" Importance="high"></Message>
+        <Exec Command="$(ProjectDir)..\..\publicanuget.cmd &quot;$(ProjectDir)bin\$(Configuration)\$(AssemblyName).$(Version).nupkg&quot; "></Exec>
+    </Target>
+    
 </Project>
