@@ -63,7 +63,7 @@ Automatic Fallback to native os MessageBox if Avalonia is not ready
 await MessageBox.ShowAsync(null, "Erro de Inicialização", "Configuração inválida.");
 ```
 
-## 🛑 Mostrar Exceção com Detalhes
+## 🛑 Show Exception with details  
 
 ```csharp
 try
@@ -76,7 +76,7 @@ catch (Exception ex)
 }
 ```
 
-Inclui nome da exceção, linha do erro e mensagem localizada.
+Includes name of exception, line of error, filename and exception message.
 
 ## 📦 Install
 
@@ -86,18 +86,19 @@ Inclui nome da exceção, linha do erro e mensagem localizada.
 dotnet add package CastelloBranco.AvaloniaMessageBox
 ```
 
-Ou no seu `.csproj`:
+Or in `.csproj`:
 
 ```xml
 <PackageReference Include="CastelloBranco.AvaloniaMessageBox" Version="1.0.0" />
 ```
 
-## 📄 Licença
+## 📄 License
 
 [MIT License](LICENSE.txt)  
 (c) 2025 **Castello Branco Tecnologia**
 
-## 🏷️ Créditos
+## 🏷️ Crédits
 
-Criado e mantido por **Castello Branco Tecnologia**  
+Created and mainteined by **Castello Branco Tecnologia**  
+
 [GitHub - CastelloBrancoTecnologia/AvaloniaMessageBox](https://github.com/CastelloBrancoTecnologia/AvaloniaMessageBox)
