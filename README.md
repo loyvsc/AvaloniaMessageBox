@@ -63,7 +63,7 @@ Automatic Fallback to native os MessageBox if Avalonia is not ready
 await MessageBox.ShowAsync(null, "Erro de Inicialização", "Configuração inválida.");
 ```
 
-## 🛑 Show Exception with details  
+## 🛑  ExceptionMessageBox - Show Exception with details  
 
 ```csharp
 try
