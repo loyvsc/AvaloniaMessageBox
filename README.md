@@ -44,7 +44,7 @@ Includes built-in translations for over **68 languages**, including:
 
 No configuration needed — just set the culture in your app startup code:
 
-## 🚀 Uso
+## 🚀 Use
 
 ```csharp
 await MessageBox.ShowAsync(
