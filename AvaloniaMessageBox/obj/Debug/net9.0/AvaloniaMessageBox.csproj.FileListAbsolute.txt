@@ -1,0 +1,14 @@
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/bin/Debug/net9.0/CastelloBranco.AvaloniaMessageBox.deps.json
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/bin/Debug/net9.0/CastelloBranco.AvaloniaMessageBox.dll
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/bin/Debug/net9.0/CastelloBranco.AvaloniaMessageBox.pdb
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/AvaloniaMessageBox.csproj.AssemblyReference.cache
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/Avalonia/Resources.Inputs.cache
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/AvaloniaMessageBox.GeneratedMSBuildEditorConfig.editorconfig
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/AvaloniaMessageBox.AssemblyInfoInputs.cache
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/AvaloniaMessageBox.AssemblyInfo.cs
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/AvaloniaMessageBox.csproj.CoreCompileInputs.cache
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/AvaloniaMessageBox.sourcelink.json
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/CastelloBranco.AvaloniaMessageBox.dll
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/refint/CastelloBranco.AvaloniaMessageBox.dll
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/CastelloBranco.AvaloniaMessageBox.pdb
+/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/obj/Debug/net9.0/ref/CastelloBranco.AvaloniaMessageBox.dll

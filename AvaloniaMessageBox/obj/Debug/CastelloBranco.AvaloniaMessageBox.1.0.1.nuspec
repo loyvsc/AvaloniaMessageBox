@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>CastelloBranco.AvaloniaMessageBox</id>
+    <version>1.0.1</version>
+    <title>CastelloBranco.AvaloniaMessageBox</title>
+    <authors>Castello Branco Tecnologia</authors>
+    <license type="file">LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/CastelloBrancoTecnologia/AvaloniaMessageBox</projectUrl>
+    <description>Utility Functions for string Manipulation</description>
+    <copyright>Castello Branco Tecnologia</copyright>
+    <repository type="git" url="https://github.com/CastelloBrancoTecnologia/AvaloniaMessageBox" commit="209e0c0ccd2d429ade489cb18465a577c2238f71" />
+    <dependencies>
+      <group targetFramework="net9.0">
+        <dependency id="Avalonia" version="11.2.8" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="/home/cesar/RiderProjects/AvaloniaMessageBox/AvaloniaMessageBox/bin/Debug/net9.0/CastelloBranco.AvaloniaMessageBox.dll" target="lib/net9.0/CastelloBranco.AvaloniaMessageBox.dll" />
+    <file src="/home/cesar/RiderProjects/AvaloniaMessageBox/LICENSE.txt" target="/LICENSE.txt" />
+    <file src="/home/cesar/RiderProjects/AvaloniaMessageBox/README.md" target="/README.md" />
+  </files>
+</package>
