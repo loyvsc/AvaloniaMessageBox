@@ -26,34 +26,34 @@ public static class MessageBox
     
     public static async Task<MessageBoxResult> ShowAsync(
         object? parent,
-        string title,
-        string message,
+        string caption,
+        string text,
         MessageBoxButtons buttons = MessageBoxButtons.Ok,
         MessageBoxIcon icon = MessageBoxIcon.None)
     {
         if (IsAvaloniaReady())
         {
-            return await ShowOnAvaloniaAsync(parent, title, message, buttons, icon);
+            return await ShowOnAvaloniaAsync(parent, caption, text, buttons, icon);
         }
         else
         {
-            return await NativeOsMessageBox.ShowAsync(parent, title, message, buttons, icon);
+            return await NativeOsMessageBox.ShowAsync(parent, caption, text, buttons, icon);
         }
     }
 
     public static async Task<MessageBoxResult> ShowAsync(
         object? parent,
-        string message,
+        string text,
         MessageBoxButtons buttons = MessageBoxButtons.Ok,
         MessageBoxIcon icon = MessageBoxIcon.None)
     {
         if (IsAvaloniaReady())
         {
-            return await ShowOnAvaloniaAsync(parent, string.Empty, message, buttons, icon);
+            return await ShowOnAvaloniaAsync(parent, string.Empty, text, buttons, icon);
         }
         else
         {
-            return await NativeOsMessageBox.ShowAsync(parent, String.Empty, message, buttons, icon);
+            return await NativeOsMessageBox.ShowAsync(parent, String.Empty, text, buttons, icon);
         }
     }
     
@@ -70,8 +70,8 @@ public static class MessageBox
     
     private static async Task<MessageBoxResult> ShowOnAvaloniaAsync(
         object? parent,
-        string title,
-        string message,
+        string caption,
+        string text,
         MessageBoxButtons buttons = MessageBoxButtons.Ok,
         MessageBoxIcon icon = MessageBoxIcon.None)
     {
@@ -88,10 +88,10 @@ public static class MessageBox
         double maxAllowedWidth = screenBounds.Width * 0.8;
         Typeface typeface = new Typeface(FontFamily.Default);
         
-        var formattedTitle = new FormattedText(title, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, 16, null);
+        var formattedTitle = new FormattedText(caption, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, 16, null);
         double titleWidth = formattedTitle.Width + 40;
 
-        string[] lines = message.Split('\n');
+        string[] lines = text.Split('\n');
         double maxLineWidth = 0;
         foreach (var line in lines)
         {
@@ -125,7 +125,7 @@ public static class MessageBox
             Child = new TextBlock
             {
                 FontFamily = FontFamily.Default,
-                Text = title,
+                Text = caption,
                 FontSize = 16,
                 FontWeight = FontWeight.Bold,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -211,7 +211,7 @@ public static class MessageBox
         TextBlock messageBlock = new TextBlock
         {
             FontFamily = FontFamily.Default,
-            Text = message,
+            Text = text,
             FlowDirection = CultureInfo.CurrentCulture!.TextInfo.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight,
             TextWrapping = TextWrapping.Wrap,
             TextAlignment = TextAlignment.Justify,
@@ -220,7 +220,7 @@ public static class MessageBox
             Margin = new Thickness(0, 10, 10, 10)
         };
         
-        AutomationProperties.SetName(messageBlock, message);
+        AutomationProperties.SetName(messageBlock, text);
 
         StackPanel messagePanel = new StackPanel
         {
@@ -291,7 +291,7 @@ public static class MessageBox
                 break;
         }
 
-        int lineCount = Math.Max(lines.Length, message.Length / 60 + 1);
+        int lineCount = Math.Max(lines.Length, text.Length / 60 + 1);
         double lineHeight = 22;
         double estimatedTextHeight = lineCount * lineHeight;
         double baseHeight = MinAllowedHeight;
