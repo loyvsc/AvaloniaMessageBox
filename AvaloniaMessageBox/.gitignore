@@ -1,0 +1,11 @@
+﻿[Bb]in/
+[Oo]bj/
+
+.vs/
+.idea/
+
+*.user
+*.suo
+
+.nuget/
+packages/
