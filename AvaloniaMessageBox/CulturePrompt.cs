@@ -47,7 +47,6 @@ namespace CastelloBranco.AvaloniaMessageBox;
             new("it", "Sì", "No", "Ok", "Annulla", "Eccezione", "Si è verificato un errore", "Posizione", "Messaggio"),
             new("ja", "はい", "いいえ", "OK", "キャンセル", "例外", "エラーが発生しました", "場所", "メッセージ"),
             new("zh-CN", "是", "否", "确定", "取消", "异常", "发生了一个错误", "位置", "消息"),
-            new("ru", "Да", "Нет", "ОК", "Отмена", "Исключение", "Произошла ошибка", "Местоположение", "Сообщение"),
             new("ko", "예", "아니오", "확인", "취소", "예외", "오류가 발생했습니다", "위치", "메시지"),
             new("ar", "نعم", "لا", "موافق", "إلغاء", "استثناء", "حدث خطأ", "الموقع", "الرسالة"),
             new("en-US", "Yes", "No", "OK", "Cancel", "Exception", "An error occurred", "Location", "Message"),
