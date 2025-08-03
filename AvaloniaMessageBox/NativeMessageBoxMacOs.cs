@@ -104,7 +104,11 @@ internal static class NativeMessageBoxMacOs
         IntPtr sharedAppSel = sel_registerName("sharedApplication");
         IntPtr activateIgnoringOtherAppsSel = sel_registerName("activateIgnoringOtherApps:");
         IntPtr sharedApp = objc_msgSend(nsAppClass, sharedAppSel);
+#if NET6_0
+        objc_msgSend(sharedApp, activateIgnoringOtherAppsSel, new IntPtr(1));
+#else
         objc_msgSend(sharedApp, activateIgnoringOtherAppsSel, 1);
+#endif
 
         // Create an instance of NSAlert
         IntPtr alert = objc_msgSend(objc_msgSend(nsAlertClass, allocSel), initSel);
