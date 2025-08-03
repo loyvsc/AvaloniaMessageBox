@@ -34,6 +34,27 @@ public static class NativeOsMessageBox
             throw new NotSupportedException("Avalonia not available and Native Os not supported." );
         }
     }
+    
+    public static async Task<MessageBoxResult> ShowExceptionDialogAsync(Exception ex)
+    {
+        var text = ExceptionHelper.ProvideExceptionDescription(ex);
+        var caption = CulturePrompt.Current.AnErrorWasOcurred;
+        
+        if (OperatingSystem.IsMacOS())
+        {
+            return await NativeMessageBoxMacOs.ShowAsync(caption, text, MessageBoxButtons.Ok, MessageBoxIcon.Stop);
+        }
+        else if (OperatingSystem.IsLinux())
+        {
+            return NativeMessageBoxLinuxX11.Show(caption, text, MessageBoxButtons.Ok, MessageBoxIcon.Stop);
+        }
+        else if (OperatingSystem.IsWindows())
+        {
+            return await NativeMessageBoxWindows.ShowAsync(caption, text, MessageBoxButtons.Ok, MessageBoxIcon.Stop);
+        }
+        else
+        {
+            throw new NotSupportedException("Avalonia not available and Native Os not supported.");
+        }
+    }
 }
-
-
